@@ -1,0 +1,503 @@
+{
+  "1": {
+    "class_type": "LoadVideo",
+    "inputs": {
+      "file": "example/vent.mp4"
+    }
+  },
+  "2": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "1",
+        0
+      ]
+    }
+  },
+  "3": {
+    "class_type": "LoadDA3Model",
+    "inputs": {
+      "model_name": "depth_anything_3_base.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "4": {
+    "class_type": "DA3Inference",
+    "inputs": {
+      "da3_model": [
+        "3",
+        0
+      ],
+      "image": [
+        "2",
+        0
+      ],
+      "resolution": 252,
+      "resize_method": "upper_bound_resize",
+      "mode": "multiview",
+      "mode.ref_view_strategy": "first",
+      "mode.pose_method": "cam_dec"
+    }
+  },
+  "5": {
+    "class_type": "StealCameraMove",
+    "inputs": {
+      "da3_geometry": [
+        "4",
+        0
+      ],
+      "smoothing": 0.35,
+      "max_poses": 5
+    }
+  },
+  "6": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "example/underpass.png"
+    }
+  },
+  "7": {
+    "class_type": "LoadDA3Model",
+    "inputs": {
+      "model_name": "depth_anything_3_metric_large.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "8": {
+    "class_type": "DA3Inference",
+    "inputs": {
+      "da3_model": [
+        "7",
+        0
+      ],
+      "image": [
+        "6",
+        0
+      ],
+      "resolution": 252,
+      "resize_method": "upper_bound_resize",
+      "mode": "mono"
+    }
+  },
+  "9": {
+    "class_type": "ApplyMoveToImage",
+    "inputs": {
+      "still": [
+        "6",
+        0
+      ],
+      "da3_geometry": [
+        "8",
+        0
+      ],
+      "camera_move": [
+        "5",
+        0
+      ],
+      "frames": 81,
+      "width": 576,
+      "height": 960,
+      "point_size": 8,
+      "stride": 2
+    }
+  },
+  "10": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "9",
+        0
+      ],
+      "fps": 24
+    }
+  },
+  "11": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "10",
+        0
+      ],
+      "filename_prefix": "stolen_guide",
+      "format": "mp4"
+    }
+  },
+  "50": {
+    "class_type": "Canny",
+    "inputs": {
+      "image": [
+        "9",
+        0
+      ],
+      "low_threshold": 0.4,
+      "high_threshold": 0.75
+    }
+  },
+  "51": {
+    "class_type": "EmptyImage",
+    "inputs": {
+      "width": 576,
+      "height": 960,
+      "batch_size": 81,
+      "color": 0
+    }
+  },
+  "52": {
+    "class_type": "GrowMask",
+    "inputs": {
+      "mask": [
+        "9",
+        2
+      ],
+      "expand": 12,
+      "tapered_corners": true
+    }
+  },
+  "53": {
+    "class_type": "ImageCompositeMasked",
+    "inputs": {
+      "destination": [
+        "50",
+        0
+      ],
+      "source": [
+        "51",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "mask": [
+        "52",
+        0
+      ]
+    }
+  },
+  "15": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors"
+    }
+  },
+  "16": {
+    "class_type": "LTXAVTextEncoderLoader",
+    "inputs": {
+      "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors",
+      "device": "default"
+    }
+  },
+  "17": {
+    "class_type": "LTXVAudioVAELoader",
+    "inputs": {
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors"
+    }
+  },
+  "18": {
+    "class_type": "LoraLoaderModelOnly",
+    "inputs": {
+      "model": [
+        "15",
+        0
+      ],
+      "lora_name": "ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors",
+      "strength_model": 1.0
+    }
+  },
+  "19": {
+    "class_type": "GetICLoRAParameters",
+    "inputs": {
+      "iclora_model": [
+        "18",
+        0
+      ]
+    }
+  },
+  "20": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "A covered concrete walkway between straight white pillars, dark asphalt with a few autumn leaves, and a flight of outdoor stairs centered at the far end. The camera pushes straight in toward the stairs. Pillars, walls, floor, and stairs stay rigid, with sharp straight edges. Soft daylight, no people.",
+      "clip": [
+        "16",
+        0
+      ]
+    }
+  },
+  "21": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "blurry, flicker, warping, melting, bent pillars, wavy lines, extra objects, people, faces, text, logos, watermark, camera shake, new scenery",
+      "clip": [
+        "16",
+        0
+      ]
+    }
+  },
+  "22": {
+    "class_type": "LTXVConditioning",
+    "inputs": {
+      "positive": [
+        "20",
+        0
+      ],
+      "negative": [
+        "21",
+        0
+      ],
+      "frame_rate": 24
+    }
+  },
+  "23": {
+    "class_type": "EmptyLTXVLatentVideo",
+    "inputs": {
+      "width": 576,
+      "height": 960,
+      "length": 81,
+      "batch_size": 1
+    }
+  },
+  "24": {
+    "class_type": "LTXVImgToVideoInplace",
+    "inputs": {
+      "vae": [
+        "15",
+        2
+      ],
+      "image": [
+        "6",
+        0
+      ],
+      "latent": [
+        "23",
+        0
+      ],
+      "strength": 1.0,
+      "bypass": false
+    }
+  },
+  "25": {
+    "class_type": "LTXVAddGuide",
+    "inputs": {
+      "positive": [
+        "22",
+        0
+      ],
+      "negative": [
+        "22",
+        1
+      ],
+      "vae": [
+        "15",
+        2
+      ],
+      "latent": [
+        "24",
+        0
+      ],
+      "image": [
+        "9",
+        1
+      ],
+      "frame_idx": 0,
+      "strength": 1.0,
+      "iclora_parameters": [
+        "19",
+        0
+      ]
+    }
+  },
+  "35": {
+    "class_type": "LTXVAddGuide",
+    "inputs": {
+      "positive": [
+        "25",
+        0
+      ],
+      "negative": [
+        "25",
+        1
+      ],
+      "vae": [
+        "15",
+        2
+      ],
+      "latent": [
+        "25",
+        2
+      ],
+      "image": [
+        "53",
+        0
+      ],
+      "frame_idx": 0,
+      "strength": 2.0,
+      "iclora_parameters": [
+        "19",
+        0
+      ]
+    }
+  },
+  "26": {
+    "class_type": "LTXVEmptyLatentAudio",
+    "inputs": {
+      "frames_number": 81,
+      "frame_rate": 24,
+      "batch_size": 1,
+      "audio_vae": [
+        "17",
+        0
+      ]
+    }
+  },
+  "27": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "35",
+        2
+      ],
+      "audio_latent": [
+        "26",
+        0
+      ]
+    }
+  },
+  "40": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 1
+    }
+  },
+  "41": {
+    "class_type": "CFGGuider",
+    "inputs": {
+      "model": [
+        "18",
+        0
+      ],
+      "positive": [
+        "35",
+        0
+      ],
+      "negative": [
+        "35",
+        1
+      ],
+      "cfg": 1.0
+    }
+  },
+  "42": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler_ancestral_cfg_pp"
+    }
+  },
+  "43": {
+    "class_type": "ManualSigmas",
+    "inputs": {
+      "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+    }
+  },
+  "28": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "40",
+        0
+      ],
+      "guider": [
+        "41",
+        0
+      ],
+      "sampler": [
+        "42",
+        0
+      ],
+      "sigmas": [
+        "43",
+        0
+      ],
+      "latent_image": [
+        "27",
+        0
+      ]
+    }
+  },
+  "29": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "28",
+        0
+      ]
+    }
+  },
+  "30": {
+    "class_type": "LTXVCropGuides",
+    "inputs": {
+      "positive": [
+        "35",
+        0
+      ],
+      "negative": [
+        "35",
+        1
+      ],
+      "latent": [
+        "29",
+        0
+      ]
+    }
+  },
+  "31": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "30",
+        2
+      ],
+      "vae": [
+        "15",
+        2
+      ]
+    }
+  },
+  "32": {
+    "class_type": "LTXVAudioVAEDecode",
+    "inputs": {
+      "samples": [
+        "29",
+        1
+      ],
+      "audio_vae": [
+        "17",
+        0
+      ]
+    }
+  },
+  "33": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "31",
+        0
+      ],
+      "audio": [
+        "32",
+        0
+      ],
+      "fps": 24
+    }
+  },
+  "34": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "33",
+        0
+      ],
+      "filename_prefix": "camera_thief",
+      "format": "mp4"
+    }
+  }
+}

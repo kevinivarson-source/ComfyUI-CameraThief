@@ -1,0 +1,10 @@
+[project]
+name = "comfyui-camerathief"
+version = "0.1.0"
+description = "Steal a camera move from a short clip and apply that move to a still image."
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = []
+
+[tool.comfy]
+DisplayName = "ComfyUI-CameraThief"
