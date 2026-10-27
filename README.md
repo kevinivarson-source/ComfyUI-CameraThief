@@ -1,5 +1,11 @@
 # ComfyUI-CameraThief
 
+![Guide beside the finished clip. The left half is the reprojected guide and the right half is the finished video.](docs/guide-beside-final.gif)
+
+Left is the photograph reprojected along the stolen path. Right is the finished video.
+
+**Live demo:** https://camera-thief.vercel.app
+
 Steal the camera move from a short phone clip and apply that move to a still photograph.
 
 Depth Anything 3 reads the camera path from the clip and the depth of the photograph. The photograph is re-projected along that path into a depth and edge guide. LTX-2.3, with the union-control IC-LoRA, renders a new video that follows the stolen move.
@@ -20,7 +26,7 @@ This example was run on a 48GB GPU. The video model is a 22-billion-parameter ch
 4. Download the five model files in the table below. Put each file in the folder named there. The weights stay on your machine. They are not part of this repo.
 5. Copy this repo's `example` folder to `ComfyUI/input/example`. The graph refers to `example/vent.mp4` and `example/underpass.png`, relative to ComfyUI's input folder.
 6. Restart ComfyUI.
-7. Load `workflows/camera_thief.json` with File → Load, or drop the file on the window. It is the API graph, so it opens without an arranged layout. Every setting is already in the file.
+7. Drop `workflows/camera_thief_ui.json` on the ComfyUI window. That is the arranged graph. `workflows/camera_thief.json` is the same graph in API form, with the same settings.
 8. Queue the prompt.
 
 ComfyUI writes two videos to the output folder:
