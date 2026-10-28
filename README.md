@@ -14,6 +14,8 @@ Left is the photograph reprojected along the stolen path. Right is the finished 
 
 **Live demo:** https://camera-thief.vercel.app
 
+<video src="https://github.com/kevinivarson-source/ComfyUI-CameraThief/releases/download/demo-reel/camera_thief_reel.mp4" controls width="100%"></video>
+
 Steal the camera move from a short phone clip and apply that move to a still photograph.
 
 Depth Anything 3 reads the camera path from the clip and the depth of the photograph. The photograph is re-projected along that path into a depth and edge guide. LTX-2.3, with the union-control IC-LoRA, renders a new video that follows the stolen move.
