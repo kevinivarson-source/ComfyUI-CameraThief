@@ -1,5 +1,13 @@
 # ComfyUI-CameraThief
 
+<p align="center">
+<img src="docs/hero-forest.png" alt="A foggy forest path at dusk, with bare trees, a low moon, and uncarved pumpkins." width="32%">
+<img src="docs/hero-stairs.png" alt="A candlelit wooden staircase in a dark empty house." width="32%">
+<img src="docs/hero-alley.png" alt="A wet brick alley at night, lit in magenta and teal, empty of people and signs." width="32%">
+</p>
+
+Forest, a candlelit staircase, and a rainy alley. Each one is a push-in stolen from a phone clip.
+
 ![Guide beside the finished clip. The left half is the reprojected guide and the right half is the finished video.](docs/guide-beside-final.gif)
 
 Left is the photograph reprojected along the stolen path. Right is the finished video.
@@ -66,3 +74,15 @@ The hole mask is white where the guide has no surface. The depth image is white 
 ## `.cammove`
 
 A small JSON file. Poses are OpenCV world-to-camera matrices, and the first pose is the identity. `fov_deg` is one horizontal field of view per pose, so a zoom in the source clip is kept. `depth_scale` is the clip's median depth in the same units as the pose translation. Apply scales that translation onto the still's depth, so a dolly stays in proportion with the zoom.
+
+## Credits
+
+- Depth Anything 3
+- LTX-2.3 and the union-control IC-LoRA
+- Gemma 3
+- ComfyUI
+- [FLUX.1 schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell) (Apache-2.0, demo stills only, generated separately, not part of the workflow)
+- Vercel and Comfy Cloud, for hosting
+
+The Camera Thief workflow itself is open weights only.
+
