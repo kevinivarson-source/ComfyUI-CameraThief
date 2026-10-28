@@ -14,7 +14,7 @@ Left is the photograph reprojected along the stolen path. Right is the finished 
 
 **Live demo:** https://camera-thief.vercel.app
 
-<video src="https://raw.githubusercontent.com/kevinivarson-source/ComfyUI-CameraThief/master/docs/camera_thief_reel.mp4" controls width="100%"></video>
+[Demo reel](docs/camera_thief_reel.mp4)
 
 Steal the camera move from a short phone clip and apply that move to a still photograph.
 
